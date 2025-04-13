@@ -1,0 +1,45 @@
+<!-- Блок оплаты Kaspi -->
+<div class="payment-page">
+    <h2>💳 Оплата через Kaspi</h2>
+    <label for="amount">Сумма (тг):</label>
+    <input type="number" id="amount" placeholder="Введите сумму" />
+    
+    <button onclick="payWithKaspi()">Оплатить через Kaspi</button>
+    
+    <p id="payment-status"></p>
+  </div>
+  
+  <script>
+    function payWithKaspi() {
+      const amount = document.getElementById('amount').value;
+      const orderId = 'order_' + Date.now();  // Создаём уникальный ID для заказа
+      const accountId = 'user@example.com';   // Пример email пользователя (можно изменить)
+  
+      fetch('http://localhost:3000/create-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: amount,
+          orderId: orderId,
+          accountId: accountId,
+        }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.payment_url) {
+          window.location.href = data.payment_url;  // Перенаправляем пользователя на страницу оплаты Kaspi
+        }
+      })
+      .catch(error => {
+        document.getElementById('payment-status').innerText = 'Ошибка при оплате. Попробуйте снова.';
+        console.error('Ошибка:', error);
+      });
+    }
+  </script>
+  <!-- Конец блока оплаты -->
+  
+  </body>
+  </html>
+  
